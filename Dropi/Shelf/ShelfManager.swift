@@ -3,6 +3,14 @@ import AppKit
 @MainActor
 final class ShelfManager {
     private var window: ShelfWindow?
+    private let triggerEngine = TriggerEngine()
+
+    init() {
+        triggerEngine.onTrigger = { [weak self] point in
+            self?.toggle(near: point)
+        }
+        triggerEngine.start()
+    }
 
     func show(near point: NSPoint? = nil) {
         if window == nil { createWindow() }
