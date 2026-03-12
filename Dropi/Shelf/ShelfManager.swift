@@ -7,7 +7,7 @@ final class ShelfManager {
 
     init() {
         triggerEngine.onTrigger = { [weak self] point in
-            self?.toggle(near: point)
+            Task { @MainActor in self?.toggle(near: point) }
         }
         triggerEngine.start()
     }

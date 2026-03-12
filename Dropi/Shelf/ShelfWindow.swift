@@ -16,7 +16,7 @@ class ShelfWindow: NSPanel {
         isOpaque = false
         backgroundColor = .clear
         hasShadow = true
-        isMovableByWindowBackground = true
+        isMovableByWindowBackground = false
         animationBehavior = .utilityWindow
     }
 

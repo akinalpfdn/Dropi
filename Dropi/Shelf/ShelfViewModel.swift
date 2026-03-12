@@ -1,12 +1,12 @@
 import AppKit
 import Combine
+import UniformTypeIdentifiers
 
 @MainActor
 class ShelfViewModel: ObservableObject {
     @Published var items: [ShelfItem] = []
 
     private let store = ShelfStore.shared
-    private var cancellables = Set<AnyCancellable>()
 
     init() {
         store.$items
@@ -16,10 +16,12 @@ class ShelfViewModel: ObservableObject {
     func handleDrop(providers: [NSItemProvider]) -> Bool {
         var handled = false
         for provider in providers {
-            if provider.canLoadObject(ofClass: URL.self) {
-                _ = provider.loadObject(ofClass: URL.self) { [weak self] url, _ in
-                    guard let url else { return }
-                    Task { @MainActor in self?.addFile(url: url) }
+            if provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) {
+                provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier) { [weak self] item, _ in
+                    guard let data = item as? Data,
+                          let url = URL(dataRepresentation: data, relativeTo: nil),
+                          let viewModel = self else { return }
+                    Task { @MainActor in viewModel.addFile(url: url) }
                 }
                 handled = true
             }
@@ -30,9 +32,12 @@ class ShelfViewModel: ObservableObject {
     func addFile(url: URL) {
         let item = ShelfItem(url: url)
         store.add(item)
+        let itemID = item.id
         Task.detached(priority: .userInitiated) {
             let image = await ThumbnailGenerator.generate(for: url)
-            await MainActor.run { self.store.updateThumbnail(id: item.id, image: image) }
+            await MainActor.run { [weak self] in
+                self?.store.updateThumbnail(id: itemID, image: image)
+            }
         }
     }
 

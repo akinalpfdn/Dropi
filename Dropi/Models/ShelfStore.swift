@@ -1,4 +1,5 @@
-import Foundation
+import AppKit
+import Combine
 
 @MainActor
 class ShelfStore: ObservableObject {
