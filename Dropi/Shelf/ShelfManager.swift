@@ -4,6 +4,9 @@ import AppKit
 final class ShelfManager {
     private var window: ShelfWindow?
     private let triggerEngine = TriggerEngine()
+    private var openedByDrag = false
+    private var itemCountOnOpen = 0
+    private var dragEndMonitor: Any?
 
     init() {
         triggerEngine.onTrigger = { [weak self] point in
@@ -21,10 +24,43 @@ final class ShelfManager {
 
     func hide() {
         window?.orderOut(nil)
+        openedByDrag = false
+        removeDragEndMonitor()
     }
 
     func toggle(near point: NSPoint? = nil) {
-        if let window, window.isVisible { hide() } else { show(near: point) }
+        if let window, window.isVisible {
+            hide()
+        } else {
+            openedByDrag = true
+            itemCountOnOpen = ShelfStore.shared.items.count
+            show(near: point)
+            installDragEndMonitor()
+        }
+    }
+
+    private func installDragEndMonitor() {
+        removeDragEndMonitor()
+        dragEndMonitor = NSEvent.addGlobalMonitorForEvents(matching: .leftMouseUp) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self, self.openedByDrag else { return }
+                self.openedByDrag = false
+                self.removeDragEndMonitor()
+                guard let window = self.window else { return }
+                let mouseLocation = NSEvent.mouseLocation
+                let droppedOnShelf = window.frame.contains(mouseLocation)
+                if !droppedOnShelf {
+                    self.hide()
+                }
+            }
+        }
+    }
+
+    private func removeDragEndMonitor() {
+        if let monitor = dragEndMonitor {
+            NSEvent.removeMonitor(monitor)
+            dragEndMonitor = nil
+        }
     }
 
     private func createWindow() {

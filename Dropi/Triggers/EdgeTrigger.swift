@@ -14,7 +14,7 @@ final class EdgeTrigger: ShelfTrigger {
     private var topIndicator: EdgeIndicatorWindow?
     private var indicatorsVisible = false
 
-    private let edgeThreshold: CGFloat = 5.0
+    private let edgeThreshold: CGFloat = 50.0
     private let proximityZone: CGFloat = 300.0
     private let dwellDuration: TimeInterval = 0.2
 
