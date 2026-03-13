@@ -35,19 +35,11 @@ struct ShelfContentView: View {
         }
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: Constants.Shelf.cornerRadius))
-        .overlay(
-            RoundedRectangle(cornerRadius: Constants.Shelf.cornerRadius)
-                .strokeBorder(
-                    isDropTargeted ? Color.accentColor.opacity(0.6) : Color.white.opacity(0.1),
-                    lineWidth: 1
-                )
-        )
-        .shadow(color: .black.opacity(0.3), radius: 20, y: 8)
         .onDrop(of: [.fileURL], isTargeted: $isDropTargeted) { providers in
             viewModel.handleDrop(providers: providers)
         }
         .onChange(of: viewModel.items.count) {
-            if viewModel.items.isEmpty {
+            if viewModel.items.isEmpty && isExpanded {
                 collapse()
             }
         }
