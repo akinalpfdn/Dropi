@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#141414"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+    <radialGradient id="purpleGlow" cx="0.5" cy="0.5" r="0.45">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- macOS squircle background -->
+  <rect x="32" y="32" width="960" height="960" rx="192" ry="192" fill="url(#bgGrad)"/>
+  <rect x="32" y="32" width="960" height="960" rx="192" ry="192" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.06"/>
+
+  <!-- ===== SHELF - Square, solid border ===== -->
+  <rect x="192" y="192" width="640" height="640" rx="36" ry="36" fill="#A78BFA" opacity="0.03"/>
+  <rect x="192" y="192" width="640" height="640" rx="36" ry="36" fill="none" stroke="#A78BFA" stroke-width="5" opacity="0.35"/>
+
+  <!-- ===== STACKED FILES ===== -->
+
+  <!-- File 5 - Deepest, most tilted left -->
+  <g transform="rotate(-12, 512, 512)" opacity="0.15">
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="#FFFFFF" opacity="0.04"/>
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="none" stroke="#E0E0E0" stroke-width="4"/>
+    <!-- Corner fold -->
+    <path d="M 632 280 L 632 320 L 692 320" fill="none" stroke="#E0E0E0" stroke-width="3"/>
+    <path d="M 632 280 L 692 280 L 692 320 Z" fill="#E0E0E0" opacity="0.08"/>
+  </g>
+
+  <!-- File 4 - Tilted right -->
+  <g transform="rotate(8, 512, 512)" opacity="0.2">
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="#FFFFFF" opacity="0.04"/>
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="none" stroke="#E0E0E0" stroke-width="4"/>
+    <path d="M 632 280 L 632 320 L 692 320" fill="none" stroke="#E0E0E0" stroke-width="3"/>
+    <path d="M 632 280 L 692 280 L 692 320 Z" fill="#E0E0E0" opacity="0.08"/>
+  </g>
+
+  <!-- File 3 - Slight tilt left -->
+  <g transform="rotate(-5, 512, 500)" opacity="0.3">
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="#FFFFFF" opacity="0.04"/>
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="none" stroke="#E0E0E0" stroke-width="4"/>
+    <path d="M 632 280 L 632 320 L 692 320" fill="none" stroke="#E0E0E0" stroke-width="3"/>
+    <path d="M 632 280 L 692 280 L 692 320 Z" fill="#E0E0E0" opacity="0.08"/>
+    <!-- Faint content -->
+    <line x1="368" y1="350" x2="540" y2="350" stroke="#E0E0E0" stroke-width="5" stroke-linecap="round" opacity="0.15"/>
+    <line x1="368" y1="376" x2="490" y2="376" stroke="#E0E0E0" stroke-width="5" stroke-linecap="round" opacity="0.1"/>
+  </g>
+
+  <!-- File 2 - Very slight tilt right -->
+  <g transform="rotate(2.5, 512, 510)" opacity="0.5">
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="#0D0D0D"/>
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="none" stroke="#E0E0E0" stroke-width="4.5"/>
+    <path d="M 632 280 L 632 320 L 692 320" fill="none" stroke="#E0E0E0" stroke-width="3"/>
+    <path d="M 632 280 L 692 280 L 692 320 Z" fill="#E0E0E0" opacity="0.06"/>
+    <!-- Content lines -->
+    <line x1="368" y1="346" x2="560" y2="346" stroke="#E0E0E0" stroke-width="5" stroke-linecap="round" opacity="0.25"/>
+    <line x1="368" y1="374" x2="500" y2="374" stroke="#E0E0E0" stroke-width="5" stroke-linecap="round" opacity="0.15"/>
+    <line x1="368" y1="402" x2="530" y2="402" stroke="#E0E0E0" stroke-width="5" stroke-linecap="round" opacity="0.1"/>
+  </g>
+
+  <!-- File 1 - Front/top, straight, purple accent -->
+  <g>
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="#0D0D0D"/>
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="#A78BFA" opacity="0.04"/>
+    <rect x="332" y="280" width="360" height="460" rx="16" ry="16" fill="none" stroke="#A78BFA" stroke-width="5" opacity="0.55"/>
+    <!-- Corner fold -->
+    <path d="M 632 280 L 632 324 L 692 324" fill="none" stroke="#A78BFA" stroke-width="3" opacity="0.4"/>
+    <path d="M 632 280 L 692 280 L 692 324 Z" fill="#A78BFA" opacity="0.08"/>
+    <!-- Content lines -->
+    <line x1="370" y1="348" x2="580" y2="348" stroke="#E0E0E0" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+    <line x1="370" y1="378" x2="520" y2="378" stroke="#E0E0E0" stroke-width="6" stroke-linecap="round" opacity="0.3"/>
+    <line x1="370" y1="408" x2="550" y2="408" stroke="#E0E0E0" stroke-width="6" stroke-linecap="round" opacity="0.2"/>
+    <line x1="370" y1="438" x2="480" y2="438" stroke="#E0E0E0" stroke-width="5" stroke-linecap="round" opacity="0.12"/>
+    <!-- Image placeholder -->
+    <rect x="370" y="472" width="140" height="96" rx="8" fill="#A78BFA" stroke="#E0E0E0" stroke-width="2.5" opacity="0.12"/>
+    <!-- Small landscape in placeholder -->
+    <path d="M 392 548 L 416 516 L 434 536 L 456 504 L 488 548 Z" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linejoin="round" opacity="0.25"/>
+    <!-- More text after image -->
+    <line x1="370" y1="596" x2="560" y2="596" stroke="#E0E0E0" stroke-width="5" stroke-linecap="round" opacity="0.15"/>
+    <line x1="370" y1="622" x2="500" y2="622" stroke="#E0E0E0" stroke-width="5" stroke-linecap="round" opacity="0.1"/>
+  </g>
+
+  <!-- Drop arrow entering from top -->
+  <line x1="512" y1="120" x2="512" y2="168" stroke="#A78BFA" stroke-width="5" stroke-linecap="round" opacity="0.3"/>
+  <polyline points="492,154 512,176 532,154" fill="none" stroke="#A78BFA" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+
+  <!-- Purple glow overlay -->
+  <rect x="192" y="192" width="640" height="640" rx="36" ry="36" fill="url(#purpleGlow)"/>
+</svg>

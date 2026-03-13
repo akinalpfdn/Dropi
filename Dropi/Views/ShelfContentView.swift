@@ -4,9 +4,12 @@ import UniformTypeIdentifiers
 struct ShelfContentView: View {
     @StateObject private var viewModel = ShelfViewModel()
     @State private var isDropTargeted = false
+    @State private var isExpanded = false
 
-    private let columns = [
-        GridItem(.adaptive(minimum: Constants.Shelf.itemSize + 20), spacing: Constants.Shelf.itemSpacing)
+    private let expandedColumns = [
+        GridItem(.fixed(Constants.Shelf.itemSize + 12)),
+        GridItem(.fixed(Constants.Shelf.itemSize + 12)),
+        GridItem(.fixed(Constants.Shelf.itemSize + 12))
     ]
 
     var body: some View {
@@ -15,26 +18,59 @@ struct ShelfContentView: View {
 
             if viewModel.items.isEmpty {
                 DropZoneView()
+                    .frame(width: Constants.Shelf.compactWidth, height: 200)
+            } else if isExpanded {
+                expandedView
             } else {
-                itemsGrid
-                footerBar
+                CompactShelfView(
+                    items: viewModel.items,
+                    onExpand: { expand() }
+                )
             }
         }
-        .frame(
-            minWidth: Constants.Shelf.defaultWidth,
-            maxWidth: Constants.Shelf.maxWidth
-        )
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: Constants.Shelf.cornerRadius))
         .overlay(
             RoundedRectangle(cornerRadius: Constants.Shelf.cornerRadius)
-                .strokeBorder(isDropTargeted ? Color.accentColor.opacity(0.6) : Color.white.opacity(0.1), lineWidth: 1)
+                .strokeBorder(
+                    isDropTargeted ? Color.accentColor.opacity(0.6) : Color.white.opacity(0.1),
+                    lineWidth: 1
+                )
         )
         .shadow(color: .black.opacity(0.3), radius: 20, y: 8)
         .onDrop(of: [.fileURL], isTargeted: $isDropTargeted) { providers in
             viewModel.handleDrop(providers: providers)
         }
+        .onChange(of: viewModel.items.count) {
+            if viewModel.items.isEmpty {
+                collapse()
+            }
+        }
     }
+
+    private func expand() {
+        withAnimation(.spring(duration: 0.3)) { isExpanded = true }
+        resizeWindow(width: Constants.Shelf.expandedWidth, height: Constants.Shelf.expandedHeight)
+    }
+
+    private func collapse() {
+        withAnimation(.spring(duration: 0.3)) { isExpanded = false }
+        resizeWindow(width: Constants.Shelf.compactWidth, height: Constants.Shelf.compactHeight)
+    }
+
+    private func resizeWindow(width: CGFloat, height: CGFloat) {
+        guard let window = NSApp.windows.first(where: { $0 is ShelfWindow }) else { return }
+        let oldFrame = window.frame
+        let newFrame = NSRect(
+            x: oldFrame.midX - width / 2,
+            y: oldFrame.midY - height / 2,
+            width: width,
+            height: height
+        )
+        window.animator().setFrame(newFrame, display: true)
+    }
+
+    // MARK: - Drag Handle
 
     private var dragHandle: some View {
         HStack {
@@ -42,17 +78,17 @@ struct ShelfContentView: View {
                 NSApp.windows.first(where: { $0 is ShelfWindow })?.orderOut(nil)
             } label: {
                 Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 14))
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 20))
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.white.opacity(0.8), .white.opacity(0.15))
             }
             .buttonStyle(.plain)
 
             Spacer()
 
-            RoundedRectangle(cornerRadius: 2)
+            RoundedRectangle(cornerRadius: 2.5)
                 .fill(.quaternary)
-                .frame(width: 36, height: 4)
+                .frame(width: 40, height: 5)
 
             Spacer()
 
@@ -61,58 +97,83 @@ struct ShelfContentView: View {
                 NSApp.windows.first(where: { $0 is ShelfWindow })?.orderOut(nil)
             } label: {
                 Image(systemName: "chevron.down.circle.fill")
-                    .font(.system(size: 14))
+                    .font(.system(size: 20))
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.white.opacity(0.8), .white.opacity(0.15))
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, Constants.Shelf.padding + 2)
+        .padding(.top, 12)
+        .padding(.bottom, 4)
+        .background(WindowDragGesture())
+    }
+
+    // MARK: - Expanded View
+
+    private var expandedView: some View {
+        VStack(spacing: 0) {
+            expandedHeader
+
+            ScrollView {
+                LazyVGrid(columns: expandedColumns, spacing: Constants.Shelf.itemSpacing) {
+                    ForEach(viewModel.items) { item in
+                        ShelfItemView(
+                            item: item,
+                            onRemove: { viewModel.remove(item) }
+                        )
+                    }
+                }
+                .padding(.horizontal, Constants.Shelf.padding)
+                .padding(.vertical, 8)
+            }
+
+            footerBar
+        }
+        .frame(width: Constants.Shelf.expandedWidth)
+    }
+
+    private var expandedHeader: some View {
+        HStack(spacing: 8) {
+            Button {
+                collapse()
+            } label: {
+                Image(systemName: "chevron.left.circle.fill")
+                    .font(.system(size: 16))
                     .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(.secondary)
             }
             .buttonStyle(.plain)
-        }
-        .padding(.horizontal, Constants.Shelf.padding)
-        .padding(.top, 10)
-        .padding(.bottom, 6)
-        .background(WindowDragGesture())
-    }
 
-    private var itemsGrid: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: Constants.Shelf.itemSpacing) {
-                ForEach(viewModel.items) { item in
-                    ShelfItemView(
-                        item: item,
-                        onRemove: { viewModel.remove(item) }
-                    )
-                }
-            }
-            .padding(.horizontal, Constants.Shelf.padding)
-            .padding(.vertical, 8)
-        }
-        .frame(maxHeight: Constants.Shelf.maxHeight - 80)
-    }
+            Text("\(viewModel.items.count) Files")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.primary)
 
-    private var footerBar: some View {
-        HStack {
-            Text("\(viewModel.items.count) item\(viewModel.items.count == 1 ? "" : "s")")
-                .font(.system(size: 11))
-                .foregroundStyle(.tertiary)
             Spacer()
-            Button("Clear All") {
-                viewModel.clearAll()
-            }
-            .font(.system(size: 11))
-            .buttonStyle(.plain)
-            .foregroundStyle(.tertiary)
         }
         .padding(.horizontal, Constants.Shelf.padding)
         .padding(.vertical, 8)
     }
+
+    private var footerBar: some View {
+        HStack {
+            Spacer()
+            Button("Clear All") {
+                viewModel.clearAll()
+            }
+            .font(.system(size: 11, weight: .medium))
+            .buttonStyle(.plain)
+            .foregroundStyle(.tertiary)
+            Spacer()
+        }
+        .padding(.vertical, 8)
+    }
 }
 
-struct WindowDragGesture: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSView {
-        let view = WindowDragView()
-        return view
-    }
+// MARK: - Window Drag Helper
 
+struct WindowDragGesture: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSView { WindowDragView() }
     func updateNSView(_ nsView: NSView, context: Context) {}
 }
 

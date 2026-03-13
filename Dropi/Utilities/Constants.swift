@@ -2,9 +2,10 @@ import Foundation
 
 enum Constants {
     enum Shelf {
-        static let defaultWidth: CGFloat = 260
-        static let defaultHeight: CGFloat = 300
-        static let maxWidth: CGFloat = 500
+        static let compactWidth: CGFloat = 320
+        static let compactHeight: CGFloat = 380
+        static let expandedWidth: CGFloat = 480
+        static let expandedHeight: CGFloat = 520
         static let maxHeight: CGFloat = 600
         static let cornerRadius: CGFloat = 16
         static let itemSize: CGFloat = 120

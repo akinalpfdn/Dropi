@@ -18,9 +18,17 @@ class ShelfViewModel: ObservableObject {
         for provider in providers {
             if provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) {
                 provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier) { [weak self] item, _ in
-                    guard let data = item as? Data,
-                          let url = URL(dataRepresentation: data, relativeTo: nil),
-                          let viewModel = self else { return }
+                    let url: URL? = {
+                        if let data = item as? Data {
+                            return URL(dataRepresentation: data, relativeTo: nil)
+                        } else if let url = item as? URL {
+                            return url
+                        } else if let string = item as? String {
+                            return URL(string: string)
+                        }
+                        return nil
+                    }()
+                    guard let url, let viewModel = self else { return }
                     Task { @MainActor in viewModel.addFile(url: url) }
                 }
                 handled = true
