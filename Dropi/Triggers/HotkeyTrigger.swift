@@ -6,9 +6,8 @@ final class HotkeyTrigger: ShelfTrigger {
 
     private var monitor: Any?
 
-    // ⌘ + Shift + Space
-    private let keyCode: UInt16 = 49
-    private let modifiers: NSEvent.ModifierFlags = [.command, .shift]
+    var keyCode: UInt16 = 49
+    var modifiers: NSEvent.ModifierFlags = [.command, .shift]
 
     func start() {
         monitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in

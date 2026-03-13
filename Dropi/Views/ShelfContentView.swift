@@ -3,8 +3,10 @@ import UniformTypeIdentifiers
 
 struct ShelfContentView: View {
     @StateObject private var viewModel = ShelfViewModel()
+    @StateObject private var settings = AppSettings.shared
     @State private var isDropTargeted = false
     @State private var isExpanded = false
+    @State private var showSettings = false
 
     private let expandedColumns = [
         GridItem(.fixed(Constants.Shelf.itemSize + 12)),
@@ -16,7 +18,9 @@ struct ShelfContentView: View {
         VStack(spacing: 0) {
             dragHandle
 
-            if viewModel.items.isEmpty {
+            if showSettings {
+                SettingsView(settings: settings)
+            } else if viewModel.items.isEmpty {
                 DropZoneView()
                     .frame(width: Constants.Shelf.compactWidth, height: 200)
             } else if isExpanded {
@@ -45,6 +49,9 @@ struct ShelfContentView: View {
             if viewModel.items.isEmpty {
                 collapse()
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .closeSettings)) { _ in
+            withAnimation(.spring(duration: 0.25)) { showSettings = false }
         }
     }
 
@@ -93,13 +100,20 @@ struct ShelfContentView: View {
             Spacer()
 
             Button {
-                viewModel.clearAll()
-                NSApp.windows.first(where: { $0 is ShelfWindow })?.orderOut(nil)
+                withAnimation(.spring(duration: 0.25)) {
+                    showSettings.toggle()
+                    if showSettings {
+                        isExpanded = false
+                    }
+                }
             } label: {
-                Image(systemName: "chevron.down.circle.fill")
+                Image(systemName: showSettings ? "gearshape.circle.fill" : "gearshape.circle")
                     .font(.system(size: 20))
                     .symbolRenderingMode(.palette)
-                    .foregroundStyle(.white.opacity(0.8), .white.opacity(0.15))
+                    .foregroundStyle(
+                        showSettings ? .white : .white.opacity(0.8),
+                        showSettings ? Color.accentColor.opacity(0.6) : .white.opacity(0.15)
+                    )
             }
             .buttonStyle(.plain)
         }
