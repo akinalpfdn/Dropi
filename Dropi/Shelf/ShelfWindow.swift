@@ -18,8 +18,20 @@ class ShelfWindow: NSPanel {
         hasShadow = true
         isMovableByWindowBackground = false
         animationBehavior = .utilityWindow
+        acceptsMouseMovedEvents = true
     }
 
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
+
+    override func sendEvent(_ event: NSEvent) {
+        if event.type == .leftMouseDown {
+            makeKey()
+        }
+        super.sendEvent(event)
+    }
+}
+
+class FirstMouseView: NSView {
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 }
