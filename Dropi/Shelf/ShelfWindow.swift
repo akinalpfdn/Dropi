@@ -4,7 +4,7 @@ class ShelfWindow: NSPanel {
     init(contentRect: NSRect) {
         super.init(
             contentRect: contentRect,
-            styleMask: [.nonactivatingPanel, .borderless, .hudWindow],
+            styleMask: [.nonactivatingPanel, .borderless],
             backing: .buffered,
             defer: false
         )
@@ -18,6 +18,15 @@ class ShelfWindow: NSPanel {
         hasShadow = true
         isMovableByWindowBackground = false
         animationBehavior = .utilityWindow
+
+    }
+
+    override var contentViewController: NSViewController? {
+        didSet {
+            contentView?.wantsLayer = true
+            contentView?.layer?.cornerRadius = Constants.Shelf.cornerRadius
+            contentView?.layer?.masksToBounds = true
+        }
     }
 
     override var canBecomeKey: Bool { true }

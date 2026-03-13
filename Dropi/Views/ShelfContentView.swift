@@ -30,6 +30,7 @@ struct ShelfContentView: View {
                     items: viewModel.items,
                     onExpand: { expand() }
                 )
+                clearBar
             }
         }
         .background(.ultraThinMaterial)
@@ -167,6 +168,24 @@ struct ShelfContentView: View {
         }
         .padding(.horizontal, Constants.Shelf.padding)
         .padding(.vertical, 8)
+    }
+
+    private var clearBar: some View {
+        HStack {
+            Button {
+                viewModel.clearAll()
+            } label: {
+                Image(systemName: "trash.circle.fill")
+                    .font(.system(size: 26))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
+
+            Spacer()
+        }
+        .padding(.horizontal, Constants.Shelf.padding)
+        .padding(.bottom, 8)
     }
 
     private var footerBar: some View {
