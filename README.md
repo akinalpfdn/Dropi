@@ -10,9 +10,13 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/akinalpfdn/Dropi/releases/latest">
-    <img src="https://img.shields.io/github/v/release/akinalpfdn/Dropi?style=flat-square&label=Download&color=blue" alt="Download">
+  <a href="https://github.com/akinalpfdn/Dropi/releases/latest/download/Dropi.dmg">
+    <img src="Assets/btn-macos.svg" alt="Download for macOS">
   </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/akinalpfdn/Dropi?style=flat-square&color=blue" alt="Version">
   <img src="https://img.shields.io/github/license/akinalpfdn/Dropi?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/platform-macOS%2014%2B-lightgrey?style=flat-square" alt="Platform">
 </p>
@@ -124,7 +128,7 @@ Contributions are welcome. Please open an issue first to discuss what you'd like
 
 ## License
 
-[MIT](LICENSE)
+[GNU GPLv3](LICENSE)
 
 ---
 
