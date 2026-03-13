@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22" width="22" height="22">
+  <!-- Shelf square -->
+  <rect x="3" y="3" width="16" height="16" rx="2.5" ry="2.5" fill="none" stroke="black" stroke-width="1.4"/>
+
+  <!-- Stacked files inside -->
+  <!-- Back file - tilted left -->
+  <g transform="rotate(-8, 11, 11)">
+    <rect x="6.5" y="5.5" width="9" height="11.5" rx="1" ry="1" fill="none" stroke="black" stroke-width="1"/>
+  </g>
+
+  <!-- Middle file - tilted right -->
+  <g transform="rotate(6, 11, 11)">
+    <rect x="6.5" y="5.5" width="9" height="11.5" rx="1" ry="1" fill="none" stroke="black" stroke-width="1"/>
+  </g>
+
+  <!-- Front file - straight -->
+  <rect x="6.5" y="5.5" width="9" height="11.5" rx="1" ry="1" fill="white" stroke="black" stroke-width="1.2"/>
+  <!-- Content lines -->
+  <line x1="8.5" y1="9" x2="13.5" y2="9" stroke="black" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+  <line x1="8.5" y1="11.2" x2="12" y2="11.2" stroke="black" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+</svg>

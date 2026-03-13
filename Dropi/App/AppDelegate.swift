@@ -32,7 +32,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard statusItem == nil else { return }
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         guard let button = statusItem?.button else { return }
-        button.image = NSImage(systemSymbolName: "tray.and.arrow.down.fill", accessibilityDescription: "Dropi")
+        let icon = NSImage(named: "MenuBarIcon") ?? NSImage(systemSymbolName: "tray.and.arrow.down.fill", accessibilityDescription: "Dropi")
+        icon?.size = NSSize(width: 18, height: 18)
+        icon?.isTemplate = true
+        button.image = icon
         button.action = #selector(toggleShelf)
         button.target = self
     }
