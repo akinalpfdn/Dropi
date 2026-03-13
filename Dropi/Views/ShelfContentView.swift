@@ -7,6 +7,7 @@ struct ShelfContentView: View {
     @State private var isDropTargeted = false
     @State private var isExpanded = false
     @State private var showSettings = false
+    @State private var selectedIDs: Set<UUID> = []
 
     private let expandedColumns = [
         GridItem(.fixed(Constants.Shelf.itemSize + 12)),
@@ -60,6 +61,31 @@ struct ShelfContentView: View {
     private func collapse() {
         withAnimation(.spring(duration: 0.3)) { isExpanded = false }
         resizeWindow(width: Constants.Shelf.compactWidth, height: Constants.Shelf.compactHeight)
+    }
+
+    private func handleItemTap(item: ShelfItem, cmdPressed: Bool) {
+        withAnimation(.easeInOut(duration: 0.15)) {
+            if cmdPressed {
+                if selectedIDs.contains(item.id) {
+                    selectedIDs.remove(item.id)
+                } else {
+                    selectedIDs.insert(item.id)
+                }
+            } else {
+                if selectedIDs.contains(item.id) && selectedIDs.count == 1 {
+                    selectedIDs.removeAll()
+                } else {
+                    selectedIDs = [item.id]
+                }
+            }
+        }
+    }
+
+    private func dragURLsFor(_ item: ShelfItem) -> [URL] {
+        if selectedIDs.contains(item.id) && selectedIDs.count > 1 {
+            return viewModel.items.filter { selectedIDs.contains($0.id) }.map(\.url)
+        }
+        return [item.url]
     }
 
     private func resizeWindow(width: CGFloat, height: CGFloat) {
@@ -131,7 +157,16 @@ struct ShelfContentView: View {
                     ForEach(viewModel.items) { item in
                         ShelfItemView(
                             item: item,
-                            onRemove: { viewModel.remove(item) }
+                            isSelected: selectedIDs.contains(item.id),
+                            onRemove: { viewModel.remove(item) },
+                            onTap: { cmdPressed in
+                                handleItemTap(item: item, cmdPressed: cmdPressed)
+                            },
+                            dragURLs: dragURLsFor(item),
+                            onDragOut: { urls in
+                                viewModel.removeByURLs(urls)
+                                selectedIDs.removeAll()
+                            }
                         )
                     }
                 }
@@ -147,7 +182,11 @@ struct ShelfContentView: View {
     private var expandedHeader: some View {
         HStack(spacing: 8) {
             Button {
-                collapse()
+                if selectedIDs.isEmpty {
+                    collapse()
+                } else {
+                    withAnimation { selectedIDs.removeAll() }
+                }
             } label: {
                 Image(systemName: "chevron.left.circle.fill")
                     .font(.system(size: 16))
@@ -156,11 +195,32 @@ struct ShelfContentView: View {
             }
             .buttonStyle(.plain)
 
-            Text("\(viewModel.items.count) Files")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.primary)
+            if selectedIDs.isEmpty {
+                Text("\(viewModel.items.count) Files")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.primary)
+            } else {
+                Text("\(selectedIDs.count) Selected")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Color.accentColor)
+            }
 
             Spacer()
+
+            if !selectedIDs.isEmpty {
+                Button {
+                    let urls = viewModel.items.filter { selectedIDs.contains($0.id) }.map(\.url)
+                    viewModel.removeByURLs(urls)
+                    selectedIDs.removeAll()
+                } label: {
+                    Image(systemName: "trash.circle.fill")
+                        .font(.system(size: 16))
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .transition(.opacity)
+            }
         }
         .padding(.horizontal, Constants.Shelf.padding)
         .padding(.vertical, 8)

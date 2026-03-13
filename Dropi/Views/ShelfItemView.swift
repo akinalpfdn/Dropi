@@ -3,7 +3,11 @@ import AppKit
 
 struct ShelfItemView: View {
     let item: ShelfItem
+    let isSelected: Bool
     let onRemove: () -> Void
+    let onTap: (Bool) -> Void
+    let dragURLs: [URL]
+    let onDragOut: (([URL]) -> Void)?
 
     @State private var isHovered = false
 
@@ -14,6 +18,10 @@ struct ShelfItemView: View {
                     .frame(width: Constants.Shelf.itemSize, height: Constants.Shelf.itemSize)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .shadow(color: .black.opacity(0.15), radius: 3, y: 1)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .strokeBorder(Color.accentColor, lineWidth: isSelected ? 2.5 : 0)
+                    )
 
                 if isHovered {
                     Button(action: onRemove) {
@@ -35,7 +43,12 @@ struct ShelfItemView: View {
                 .foregroundStyle(.primary)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 3)
-                .background(.ultraThinMaterial, in: Capsule())
+                .background(
+                    isSelected
+                        ? AnyShapeStyle(Color.accentColor.opacity(0.3))
+                        : AnyShapeStyle(.ultraThinMaterial),
+                    in: Capsule()
+                )
         }
         .padding(6)
         .onHover { hovering in
@@ -43,10 +56,10 @@ struct ShelfItemView: View {
                 isHovered = hovering
             }
         }
-        .overlay(SingleFileDragSource(
-            url: item.url,
-            thumbnail: item.thumbnail,
-            onDragCompleted: onRemove
+        .overlay(MultiFileDragSource(
+            urls: dragURLs,
+            onDragCompleted: onDragOut,
+            onTap: onTap
         ))
     }
 
