@@ -28,7 +28,10 @@ struct ShelfContentView: View {
             } else {
                 CompactShelfView(
                     items: viewModel.items,
-                    onExpand: { expand() }
+                    onExpand: { expand() },
+                    onDragOut: { urls in
+                        viewModel.removeByURLs(urls)
+                    }
                 )
                 clearBar
             }
@@ -39,8 +42,9 @@ struct ShelfContentView: View {
             viewModel.handleDrop(providers: providers)
         }
         .onChange(of: viewModel.items.count) {
-            if viewModel.items.isEmpty && isExpanded {
-                collapse()
+            if viewModel.items.isEmpty {
+                if isExpanded { collapse() }
+                NSApp.windows.first(where: { $0 is ShelfWindow })?.orderOut(nil)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .closeSettings)) { _ in

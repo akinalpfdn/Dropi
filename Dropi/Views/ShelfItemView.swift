@@ -43,9 +43,11 @@ struct ShelfItemView: View {
                 isHovered = hovering
             }
         }
-        .onDrag {
-            NSItemProvider(object: item.url as NSURL)
-        }
+        .overlay(SingleFileDragSource(
+            url: item.url,
+            thumbnail: item.thumbnail,
+            onDragCompleted: onRemove
+        ))
     }
 
     @ViewBuilder

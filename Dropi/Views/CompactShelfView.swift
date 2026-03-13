@@ -4,6 +4,7 @@ import AppKit
 struct CompactShelfView: View {
     let items: [ShelfItem]
     let onExpand: () -> Void
+    var onDragOut: (([URL]) -> Void)?
 
     var body: some View {
         VStack(spacing: 10) {
@@ -15,7 +16,10 @@ struct CompactShelfView: View {
                 }
             }
             .frame(width: 150, height: 150)
-            .overlay(MultiFileDragSource(urls: items.map(\.url)))
+            .overlay(MultiFileDragSource(
+                urls: items.map(\.url),
+                onDragCompleted: onDragOut
+            ))
 
             Button(action: onExpand) {
                 HStack(spacing: 4) {

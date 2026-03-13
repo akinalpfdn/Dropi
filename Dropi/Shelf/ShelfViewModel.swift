@@ -53,6 +53,12 @@ class ShelfViewModel: ObservableObject {
         store.remove(item)
     }
 
+    func removeByURLs(_ urls: [URL]) {
+        for url in urls {
+            store.removeByURL(url)
+        }
+    }
+
     func clearAll() {
         store.clearAll()
     }

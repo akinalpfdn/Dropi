@@ -18,6 +18,10 @@ class ShelfStore: ObservableObject {
         items.removeAll { $0.id == item.id }
     }
 
+    func removeByURL(_ url: URL) {
+        items.removeAll { $0.url == url }
+    }
+
     func updateThumbnail(id: UUID, image: NSImage) {
         guard let index = items.firstIndex(where: { $0.id == id }) else { return }
         items[index].thumbnail = image
