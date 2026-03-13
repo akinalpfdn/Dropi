@@ -9,6 +9,8 @@
   Drag files in. Drag them out. That's it.
 </p>
 
+<h3 align="center">Download</h3>
+
 <p align="center">
   <a href="https://github.com/akinalpfdn/Dropi/releases/latest/download/Dropi.dmg">
     <img src="Assets/btn-macos.svg" alt="Download for macOS">
@@ -17,7 +19,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/github/v/release/akinalpfdn/Dropi?style=flat-square&color=blue" alt="Version">
-  <img src="https://img.shields.io/github/license/akinalpfdn/Dropi?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/license-GPLv3-blue?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/platform-macOS%2014%2B-lightgrey?style=flat-square" alt="Platform">
 </p>
 
